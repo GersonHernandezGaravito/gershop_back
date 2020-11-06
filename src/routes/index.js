@@ -6,7 +6,7 @@ const Menu = require ('../models/Menu');
 const Estilo = require('../models/Estilo');
 
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 
