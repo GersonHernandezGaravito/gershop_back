@@ -4,7 +4,7 @@ const Usuario = require("../models/Usuario");
 const Perfil = require ('../models/Perfil');
 
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 var BCRYPT_SALT_ROUNDS = 10;
 
 // Get All Route
