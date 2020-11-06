@@ -7,7 +7,7 @@
     "node": "12.19.0"
   },
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "start": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
