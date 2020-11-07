@@ -291,4 +291,83 @@ async function getUser(req, res, next) {
     next();
 }
 
+
+//CRUD DE ROLES
+router.get("/roles", async (req, res) => {
+  try {
+      const perfil = await Perfil.find()
+      res.json(perfil)
+  } catch (err) {
+      res.status(500).json({message: err.message})
+  }
+}); 
+
+// Get One Route
+router.get("/roles/:id", getPerfil, (req, res) => {
+  res.json(res.perfil);
+});
+
+// Create One Route 
+router.post("/roles", async (req, res) => {
+const {_id, nombreRol} = req.body;
+  try {
+    const nuevoPerfil = new Perfil({_id, nombreRol});
+    await nuevoPerfil.save();
+        
+    res.status(201).json({ nuevoPerfil });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Edit One Route PUT version
+router.put("/roles/:id", getPerfil, async (req, res) => {
+  try {
+    const modificarPerfil = await res.perfil.set(req.body);
+    res.json(modificarPerfil);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Edit One Route PATCH version
+router.patch("/roles/:id", getPerfil, async (req, res) => {
+  if (req.body._id != null) {
+    res.perfil._id = req.body._id;
+  }
+  if (req.body.nombreRol != null) {
+    res.perfil.nombreRol = req.body.nombreRol;
+  }
+  try {
+    const updatedPerfil = await res.perfil.save();
+    res.json(updatedPerfil);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Delete One Route
+//Delete One
+router.delete("/roles/:id", getPerfil, async (req, res) => {
+  try {
+    await res.perfil.deleteOne();
+    res.json({ message: "USUARIO ELIMINADO" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+async function getPerfil(req, res, next) {
+  let perfil;
+  try {
+    perfil = await Perfil.findById(req.params.id);
+    if (perfil == null) {
+      return res.status(404).json({ message: "USUARIO NO ENCONTRADO" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+  res.perfil = perfil;
+  next();
+}
 module.exports = router;
