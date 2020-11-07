@@ -252,6 +252,12 @@ router.patch("/usuarios/:id", getUser, async (req, res) => {
     if (req.body.correo != null) {
       res.usuario.correo = req.body.correo;
     }
+    if (req.body.codigoRol != null) {
+      res.usuario.codigoRol = req.body.codigoRol;
+    }
+    if (req.body.codigoEstilo != null) {
+      res.usuario.codigoEstilo = req.body.codigoEstilo;
+    }
     try {
       const updatedUser = await res.usuario.save();
       res.json(updatedUser);
