@@ -25,7 +25,7 @@ router.post('/registrar', async(req, res) => {
     const token = jwt.sign({_id: nuevoUsuario._id}, 'secretkey');
     //const perfil = await Usuario.findOne({_id: nuevoUsuario._id});
 
-    res.status(200).json({token,  rol: nuevoUsuario.codigoRol, estilo: nuevoUsuario.codigoEstilo})
+    res.status(200).json({token, id: nuevoUsuario._id,  rol: nuevoUsuario.codigoRol, estilo: nuevoUsuario.codigoEstilo})
 
 });
 
@@ -37,7 +37,7 @@ router.post('/ingresar', async(req, res) => {
         if(cmp){
         const token = jwt.sign({_id: usuario._id},'secretkey');
         //const desc = jwt.sign({rol: perfil.codigoRol}, 'secretkey')
-        res.status(200).json({token, rol: usuario.codigoRol, estilo: usuario.codigoEstilo})
+        res.status(200).json({token, id: nuevoUsuario._id, rol: usuario.codigoRol, estilo: usuario.codigoEstilo})
 
         }
         if(!cmp) {
