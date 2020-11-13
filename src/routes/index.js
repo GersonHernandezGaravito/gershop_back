@@ -5,7 +5,7 @@ const Perfil = require ('../models/Perfil');
 const Menu = require ('../models/Menu');
 const Estilo = require('../models/Estilo');
 const Cotizacion = require('../models/Cotizacion');
-
+const Compra = require('../models/Compra');
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
@@ -371,13 +371,28 @@ async function getPerfil(req, res, next) {
   next();
 }
 
+//CRUD DE ROLES
+router.get("/cotizacion", async (req, res) => {
+  try {
+      const cotizacion = await Cotizacion.find()
+      res.json(cotizacion)
+  } catch (err) {
+      res.status(500).json({message: err.message})
+  }
+}); 
+
+// Get One Route
+router.get("/cotizacion/:id", getCoti, (req, res) => {
+  res.json(res.cotizacion);
+});
+
 router.post("/cotizacion", async (req, res) => {
-  const {producto, url, precioUsd, precioQtz} = req.body;
+  const {nombreProducto, url, precioUsd, precioQtz} = req.body;
     try {
-      const nuevaCotizacion = new Perfil({producto, url, precioUsd, precioQtz});
+      const nuevaCotizacion = new Cotizacion({nombreProducto, url, precioUsd, precioQtz});
       await nuevaCotizacion.save();
           
-      res.status(201).json({ nuevaCotizacion });
+      res.status(201).json( nuevaCotizacion._id );
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
@@ -402,17 +417,17 @@ router.post("/cotizacion", async (req, res) => {
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
-    res.perfil = perfil;
+    res.cotizacion = cotizacion;
     next();
   }
 
   router.post("/compra", async (req, res) => {
-    const {producto, url, precioUsd, precioQtz} = req.body;
+    const {nombreCliente, apellidoCliente, dpi, nit, direccion, telefono, correo,producto, url, precioQtz} = req.body;
       try {
-        const nuevaCotizacion = new Perfil({producto, url, precioUsd, precioQtz});
-        await nuevaCotizacion.save();
+        const nuevaCompra = new Compra({nombreCliente, apellidoCliente, dpi, nit, direccion, telefono, correo,producto, url, precioQtz});
+        await nuevaCompra.save();
             
-        res.status(201).json({ nuevaCotizacion });
+        res.status(201).json({ nuevaCompra });
       } catch (err) {
         res.status(400).json({ message: err.message });
       }
@@ -420,24 +435,24 @@ router.post("/cotizacion", async (req, res) => {
   
     router.delete("/compra/:id", getCompra, async (req, res) => {
       try {
-        await res.cotizacion.deleteOne();
-        res.json({ message: "COTIZACION ELIMINADA" });
+        await res.compra.deleteOne();
+        res.json({ message: "COMPRA ELIMINADA" });
       } catch (err) {
         res.status(500).json({ message: err.message });
       }
     });
   
     async function getCompra(req, res, next) {
-      let cotizacion;
+      let compra;
       try {
-        cotizacion = await Cotizacion.findById(req.params.id);
-        if (cotizacion == null) {
-          return res.status(404).json({ message: "COTIZACION NO ENCONTRADA" });
+        compra = await Compra.findById(req.params.id);
+        if (compra == null) {
+          return res.status(404).json({ message: "COMPRA NO ENCONTRADA" });
         }
       } catch (err) {
         return res.status(500).json({ message: err.message });
       }
-      res.perfil = perfil;
+      res.compra = compra;
       next();
     }
 module.exports = router;
