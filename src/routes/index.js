@@ -4,7 +4,7 @@ const Usuario = require('../models/Usuario');
 const Perfil = require ('../models/Perfil');
 const Menu = require ('../models/Menu');
 const Estilo = require('../models/Estilo');
-
+const Cotizacion = require('../models/Cotizacion');
 
 const bcrypt = require('bcryptjs');
 
@@ -370,4 +370,74 @@ async function getPerfil(req, res, next) {
   res.perfil = perfil;
   next();
 }
+
+router.post("/cotizacion", async (req, res) => {
+  const {producto, url, precioUsd, precioQtz} = req.body;
+    try {
+      const nuevaCotizacion = new Perfil({producto, url, precioUsd, precioQtz});
+      await nuevaCotizacion.save();
+          
+      res.status(201).json({ nuevaCotizacion });
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  });
+
+  router.delete("/cotizacion/:id", getCoti, async (req, res) => {
+    try {
+      await res.cotizacion.deleteOne();
+      res.json({ message: "COTIZACION ELIMINADA" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  async function getCoti(req, res, next) {
+    let cotizacion;
+    try {
+      cotizacion = await Cotizacion.findById(req.params.id);
+      if (cotizacion == null) {
+        return res.status(404).json({ message: "COTIZACION NO ENCONTRADA" });
+      }
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+    res.perfil = perfil;
+    next();
+  }
+
+  router.post("/compra", async (req, res) => {
+    const {producto, url, precioUsd, precioQtz} = req.body;
+      try {
+        const nuevaCotizacion = new Perfil({producto, url, precioUsd, precioQtz});
+        await nuevaCotizacion.save();
+            
+        res.status(201).json({ nuevaCotizacion });
+      } catch (err) {
+        res.status(400).json({ message: err.message });
+      }
+    });
+  
+    router.delete("/compra/:id", getCompra, async (req, res) => {
+      try {
+        await res.cotizacion.deleteOne();
+        res.json({ message: "COTIZACION ELIMINADA" });
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+  
+    async function getCompra(req, res, next) {
+      let cotizacion;
+      try {
+        cotizacion = await Cotizacion.findById(req.params.id);
+        if (cotizacion == null) {
+          return res.status(404).json({ message: "COTIZACION NO ENCONTRADA" });
+        }
+      } catch (err) {
+        return res.status(500).json({ message: err.message });
+      }
+      res.perfil = perfil;
+      next();
+    }
 module.exports = router;
